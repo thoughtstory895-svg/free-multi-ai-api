@@ -1,0 +1,76 @@
+  <!doctype html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Free Multi AI API</title>
+    <style>
+      body{font-family:system-ui,-apple-system,Arial;margin:0;padding:24px}
+      .card{max-width:900px;margin:0 auto;border:1px solid #eee;border-radius:16px;padding:24px}
+      input,textarea,button{font-size:16px;padding:10px;border-radius:10px;border:1px solid #ddd}
+      button{cursor:pointer}
+      pre,code{background:#fafafa;padding:12px;border-radius:10px;display:block;overflow:auto}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Free Multi AI API</h1>
+      <p>Endpoints: <code>/api/chat</code>, <code>/api/summarize</code>, <code>/api/answer</code>, <code>/api/quote</code></p>
+      <h3>Try Chat</h3>
+      <form id="f1"><input id="m" placeholder="Say hi..." style="width:70%"><button>Send</button></form>
+      <pre id="out1"></pre>
+      <script>
+        document.getElementById('f1').addEventListener('submit', async (e)=>{
+          e.preventDefault();
+          const m = document.getElementById('m').value;
+          const r = await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:m})});
+          document.getElementById('out1').textContent = JSON.stringify(await r.json(), null, 2);
+        });
+      </script>
+
+      <h3>Try Summarize</h3>
+      <form id="f2"><textarea id="t" rows="4" style="width:70%" placeholder="Paste long text..."></textarea><br><button>Summarize</button></form>
+      <pre id="out2"></pre>
+      <script>
+        document.getElementById('f2').addEventListener('submit', async (e)=>{
+          e.preventDefault();
+          const t = document.getElementById('t').value;
+          const r = await fetch('/api/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})});
+          document.getElementById('out2').textContent = JSON.stringify(await r.json(), null, 2);
+        });
+      </script>
+
+      <h3>Try Q&A</h3>
+      <form id="f3">
+        <textarea id="ctx" rows="3" style="width:70%" placeholder="Context text..."></textarea><br>
+        <input id="q" placeholder="Your question..." style="width:70%"><br>
+        <button>Answer</button>
+      </form>
+      <pre id="out3"></pre>
+      <script>
+        document.getElementById('f3').addEventListener('submit', async (e)=>{
+          e.preventDefault();
+          const ctx = document.getElementById('ctx').value;
+          const q = document.getElementById('q').value;
+          const r = await fetch('/api/answer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({context:ctx,question:q})});
+          document.getElementById('out3').textContent = JSON.stringify(await r.json(), null, 2);
+        });
+      </script>
+
+      <h3>Random Quote</h3>
+      <button id="btnQ">Get Quote</button>
+      <pre id="outQ"></pre>
+      <script>
+        document.getElementById('btnQ').addEventListener('click', async ()=>{
+          const r = await fetch('/api/quote');
+          document.getElementById('outQ').textContent = JSON.stringify(await r.json(), null, 2);
+        });
+      </script>
+
+      <h2>Optional: Hugging Face key (still free)</h2>
+      <p>Add environment variables in Vercel → Project Settings → Environment Variables:</p>
+      <pre>HF_API_KEY=your_free_key
+HF_API_URL=https://api-inference.huggingface.co/models/google/gemma-2-2b-it</pre>
+    </div>
+  </body>
+  </html>
